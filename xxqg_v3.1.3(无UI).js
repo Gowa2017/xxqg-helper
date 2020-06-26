@@ -810,23 +810,21 @@ function getFitbQuestion() {
     var findBlank = false;
     var blankCount = 0;
     var blankNumStr = "";
-    questionCollections.children().forEach(item => {
-        if (item.className() != "android.widget.EditText") {
-            if (item.text() != "") {//题目段
-                if (findBlank) {
-                    blankNumStr = "|" + blankCount.toString();
-                    questionArray.push(blankNumStr);
-                    findBlank = false;
-                }
-                questionArray.push(item.text());
-            }
-            else {
-                findBlank = true;
-                blankCount += 1;
-            }
+    questionCollections.children().forEach((item) => {
+    if (item.text() != "") {
+      //题目段
+      questionArray.push(item.text());
+    } else {
+      item.children().forEach((blk) => {
+        if (blk.className() != "android.widget.EditText") {
+          blankCount += 1;
         }
-    });
-    return questionArray;
+      });
+      blankNumStr = "|" + blankCount.toString();
+      questionArray.push(blankNumStr);
+    }
+  });
+  return questionArray;
 }
 
 
