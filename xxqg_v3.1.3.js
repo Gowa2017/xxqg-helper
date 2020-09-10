@@ -1,7 +1,6 @@
 "ui";
-/*
-runtime.loadJar('./jsoup-1.12.1.jar');
-
+/**
+runtime.loadJar('./jsoup-1.13.1.jar');
 importClass(org.jsoup.Jsoup);
 importClass(org.jsoup.nodes.Document);
 importClass(org.jsoup.select.Elements);
@@ -627,6 +626,7 @@ ui.layout(
 
 
         <button w="250" layout_gravity="center" id="about" text="关于本助手" />
+        <button w="250" layout_gravity="center" id="update" text="更新题库" />
     </vertical>
 );
 
@@ -707,7 +707,6 @@ ui.stop.click(function () {
         toast("当前没有线程在运行！")
     }
 });
-/*
 ui.update.click(function () {
     if (thread != null && thread.isAlive()) {
         alert("注意!", "当前程序正在运行，请结束之前进程");
@@ -717,16 +716,13 @@ ui.update.click(function () {
     confirm("确认更新题库吗?")
     .then(c => {
         if(c){
-            console.show();
             thread = threads.start(function () {
                 updateTikunet()
             });
-            console.hide();
         }
     });
 
 });
-*/
 
 ui.about.click(function () {
     alert("xxqg-helper", "本脚本只可用于个人学习Auto.js，不得用于一切商业或违法用途，否则追究责任！造成的后果自负！\n 任何问题请上github交流!");
@@ -1357,6 +1353,7 @@ function CreateAndInsert(liArray) {
  * @return: null
  */
 function updateTikunet() {
+    console.show()
     console.log("开始下载题库json数据...");
     var htmlString = Jsoup.connect("http://49.235.90.76:5000").maxBodySize(0).timeout(10000).get();
     var htmlArray = Jsoup.parse(htmlString);
@@ -1366,4 +1363,5 @@ function updateTikunet() {
     console.log("开始更新数据库...");
     CreateAndInsert(liArray)
     console.log("数据库更新完毕！");
+    console.hide()
 }
