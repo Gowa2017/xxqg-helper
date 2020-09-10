@@ -903,9 +903,9 @@ function challengeQuestion() {
     while (!textContains("我要答题").exists());
     delay(1);
     click("我要答题");
-    while (!text("挑战答题").exists());
+    //while (!text("挑战答题").exists());
     delay(1);
-    text("挑战答题").click();
+    className('android.view.View').depth(22).indexInParent(10).findOnce().click()
     console.log("开始挑战答题")
     delay(4);
     let conNum = 0;//连续答对的次数
@@ -933,9 +933,9 @@ function challengeQuestion() {
                 delay(1);
                 //desc("再来一局").click();
                 back();
-                while (!text("挑战答题").exists());
+                //while (!text("挑战答题").exists());
                 delay(1);
-                text("挑战答题").click();
+                className('android.view.View').depth(22).indexInParent(10).findOnce().click()
                 delay(4);
                 if (conNum >= qCount) {
                     lNum++;
