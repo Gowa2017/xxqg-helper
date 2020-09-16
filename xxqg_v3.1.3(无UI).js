@@ -502,8 +502,8 @@ function getScores() {
     }
     console.log(myScores);
 
-    aCount = 6 - myScores["阅读文章"];
-    aTime = parseInt((6 - myScores["文章学习时长"]) * 120 / aCount) + 10;
+    aCount = 6 - myScores["我要选读文章"];
+    aTime = parseInt((6 - myScores["我要选读文章"]) * 120 / aCount) + 10;
     vCount = 6 - myScores["视听学习"];
     rTime = (6 - myScores["视听学习时长"]) * 180;
 

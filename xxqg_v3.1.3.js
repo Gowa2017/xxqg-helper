@@ -28,7 +28,7 @@ var commentText = ["支持党，支持国家！", "为实现中华民族伟大�
 
 var aCatlog = "推荐"//文章学习类别，可自定义修改为“要闻”、“新思想”等
 
-var lCount = 3;//挑战答题轮数
+var lCount = 2;//挑战答题轮数
 var qCount = 5;//挑战答题每轮答题数
 var myScores = {};//分数
 
@@ -502,8 +502,8 @@ function getScores() {
     }
     console.log(myScores);
 
-    aCount = 6 - myScores["阅读文章"];
-    aTime = parseInt((6 - myScores["文章学习时长"]) * 120 / aCount) + 10;
+    aCount = 6 - myScores["我要选读文章"];
+    aTime = parseInt((6 - myScores["我要选读文章"]) * 120 / aCount) + 10;
     vCount = 6 - myScores["视听学习"];
     rTime = (6 - myScores["视听学习时长"]) * 180;
 
