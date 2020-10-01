@@ -926,7 +926,7 @@ function challengeQuestion() {
             }
             else {
                 console.log("等10秒开始下一轮...")
-                delay(8);//等待10秒才能开始下一轮
+                delay(5);//等待10秒才能开始下一轮
                 back();
                 //desc("结束本局").click();//有可能找不到结束本局字样所在页面控件，所以直接返回到上一层
                 delay(1);
