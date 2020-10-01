@@ -43,6 +43,14 @@ function delay(seconds) {
     sleep(1000 * seconds);//sleep函数参数单位为毫秒所以乘1000
 }
 
+function wait_homepage() {
+  while (!id("home_bottom_tab_icon_large").exists()) {
+    console.log("正在等待加载出主页");
+    delay(1);
+  }
+
+  return id("home_bottom_tab_icon_large").findOne();
+}
 /**
  * @description: 文章学习计时(弹窗)函数
  * @param: n-文章标号 seconds-学习秒数
@@ -190,8 +198,7 @@ function getYestardayDateString() {
  * @return: null
  */
 function articleStudy() {
-    while (!desc("学习").exists());//等待加载出主页
-    desc("学习").click();//点击主页正下方的"学习"按钮
+    wait_homepage().click()
     delay(2);
     var listView = className("ListView");//获取文章ListView控件用于翻页
     click(aCatlog);
@@ -221,7 +228,7 @@ function articleStudy() {
                 console.warn("进入了视频界面，退出并进下一篇文章!");
                 t++;
                 back();
-                while (!desc("学习").exists());
+                wait_homepage()
                 delay(0.5);
                 click("电台");
                 delay(1);
@@ -229,8 +236,7 @@ function articleStudy() {
                 console.log("因为广播被打断，重新收听广播...");
                 delay(1);
                 back();
-                while (!desc("学习").exists());
-                desc("学习").click();
+                wait_homepage().click()
                 delay(1);
                 continue;
             }
@@ -252,7 +258,7 @@ function articleStudy() {
                 Comment(i);//评论
             }
             back();//返回主界面
-            while (!desc("学习").exists());//等待加载出主页
+            wait_homepage()
             delay(1);
             i++;
             t++;//t为实际点击的文章控件在当前布局中的标号,和i不同,勿改动!
@@ -332,7 +338,7 @@ function videoStudy_news() {
             console.log("即将学习第" + (i + 1) + "个视频!");
             video_timing_news(i, vTime);//学习每个新闻联播小片段
             back();//返回联播频道界面
-            while (!desc("学习").exists());//等待加载出主页
+            wait_homepage()
             delay(1);
             i++;
             t++;
@@ -454,7 +460,7 @@ function Comment(i) {
  * @return: null
  */
 function localChannel() {
-    while (!desc("学习").exists());//等待加载出主页
+    wait_homepage()
     console.log("点击本地频道");
     if (text("新思想").exists()) {
         text("新思想").findOne().parent().parent().child(3).click();
@@ -475,7 +481,7 @@ function localChannel() {
  * @return: null
  */
 function getScores() {
-    while (!desc("学习").exists());//等待加载出主页
+    wait_homepage()
     console.log("正在获取积分...");
     while (!text("积分明细").exists()) {
         if (id("comm_head_xuexi_score").exists()) {
@@ -531,10 +537,7 @@ function start_app() {
         console.error("找不到学习强国App!");
         return;
     }
-    while (!desc("学习").exists()) {
-        console.log("正在等待加载出主页");
-        delay(1);
-    }
+    wait_homepage()
     delay(1);
 }
 
