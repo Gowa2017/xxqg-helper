@@ -900,11 +900,11 @@ function challengeQuestionLoop(conNum) {
 function challengeQuestion() {
     text("我的").click();
     while (!textContains("我要答题").exists());
-    delay(5);
+    delay(1);
     click("我要答题");
     //while (!text("挑战答题").exists());
     delay(1);
-    while(!className('android.view.View').depth(22).indexInParent(10).findOnce().click()){
+    while(!className('android.view.View').depth(22).indexInParent(10).find().click()){
         sleep(1);
     }
     console.log("开始挑战答题")
