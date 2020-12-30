@@ -750,7 +750,9 @@ function challengeQuestion() {
     delay(1);
     click("我要答题");
     delay(1);
-    className('android.view.View').depth(22).indexInParent(10).findOnce().click()
+    while(!className('android.view.View').depth(22).indexInParent(10).findOnce().click()){
+        sleep(1);
+    }
     console.log("开始挑战答题")
     delay(4);
     let conNum = 0;//连续答对的次数
