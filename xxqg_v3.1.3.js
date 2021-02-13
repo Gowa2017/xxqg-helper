@@ -599,139 +599,6 @@ function main() {
 
 /********************************************UI部分***********************************************/
 auto.waitFor();//等待获取无障碍辅助权限
-ui.layout(
-    <vertical>
-        <text textSize="16sp" textColor="red" text="欢迎使用xxqg-helper!" />
-        <button id="all" h="90" text="完整运行" />
-        <button id="customize" h="90" text="自定义运行（文章视频数量按照自定义值）" />
-        <button id="cq" h="60" text="挑战答题" />
-        <button id="dq" h="60" text="每日答题" />
-        <button id="stop" h="70" text="停止运行" />
-
-        <horizontal>
-            <text textSize="16sp" marginLeft="15" textColor="black" text="文章学习类别:" />
-            <input id="acatlog" text="" />
-        </horizontal>
-
-        <horizontal>
-            <text textSize="16sp" marginLeft="15" textColor="black" text="文章数量(个):" />
-            <input id="acount" w="30" text="" />
-            <text textSize="16sp" marginLeft="15" textColor="black" text="视频数量(个):" />
-            <input id="vcount" w="30" text="" />
-        </horizontal>
-
-        <horizontal>
-            <text textSize="16sp" marginLeft="15" textColor="black" text="挑战答题轮数:" />
-            <input id="lcount" w="30" text="" />
-            <text textSize="16sp" marginLeft="15" textColor="black" text="挑战答题每轮答题数:" />
-            <input id="qcount" w="30" text="" />
-        </horizontal>
-
-
-        <button w="250" layout_gravity="center" id="about" text="关于本助手" />
-        <button w="250" layout_gravity="center" id="update" text="更新题库" />
-    </vertical>
-);
-
-ui.acatlog.setText(aCatlog.toString());
-ui.acount.setText(aCount.toString());
-ui.vcount.setText(vCount.toString());
-ui.lcount.setText(lCount.toString());
-ui.qcount.setText(qCount.toString());
-
-var thread = null;
-
-ui.all.click(function () {
-    if (thread != null && thread.isAlive()) {
-        alert("注意!", "当前程序正在运行，请结束之前进程");
-        return;
-    }
-    toast("开始完整运行");
-    thread = threads.start(function () {
-        aCatlog = ui.acatlog.getText();
-        lCount = parseInt(ui.lcount.getText());
-        qCount = parseInt(ui.qcount.getText());
-        main();
-    });
-});
-
-ui.customize.click(function () {
-    if (thread != null && thread.isAlive()) {
-        alert("注意!", "当前程序正在运行，请结束之前进程");
-        return;
-    }
-    toast("开始自定义运行");
-    thread = threads.start(function () {
-        aCount = parseInt(ui.acount.getText());
-        vCount = parseInt(ui.vcount.getText());
-        aCatlog = ui.acatlog.getText();
-        lCount = parseInt(ui.lcount.getText());
-        qCount = parseInt(ui.qcount.getText());
-        customize_flag = true;
-        console.log('文章数量：' + aCount.toString() + '篇')
-        console.log('视频数量：' + vCount.toString() + '个')
-        console.log('类别：' + aCatlog)
-        main();
-    });
-});
-
-
-ui.cq.click(function () {
-    if (thread != null && thread.isAlive()) {
-        alert("注意!", "当前程序正在运行，请结束之前进程");
-        return;
-    }
-    thread = threads.start(function () {
-        lCount = parseInt(ui.lcount.getText());
-        qCount = parseInt(ui.qcount.getText());
-        start_app();
-        challengeQuestion();
-    });
-});
-
-ui.dq.click(function () {
-    if (thread != null && thread.isAlive()) {
-        alert("注意!", "当前程序正在运行，请结束之前进程");
-        return;
-    }
-    thread = threads.start(function () {
-        start_app();
-        dailyQuestion();
-    });
-});
-
-ui.stop.click(function () {
-    if (thread != null && thread.isAlive()) {
-        threads.shutDownAll();
-        toast("已停止运行！")
-        console.hide();
-    }
-    else {
-        toast("当前没有线程在运行！")
-    }
-});
-ui.update.click(function () {
-    if (thread != null && thread.isAlive()) {
-        alert("注意!", "当前程序正在运行，请结束之前进程");
-        return;
-    }
-
-    confirm("确认更新题库吗?")
-    .then(c => {
-        if(c){
-            thread = threads.start(function () {
-                updateTikunet()
-            });
-        }
-    });
-
-});
-
-ui.about.click(function () {
-    alert("xxqg-helper", "本脚本只可用于个人学习Auto.js，不得用于一切商业或违法用途，否则追究责任！造成的后果自负！\n 任何问题请上github交流!");
-});
-
-
 /*************************************************挑战答题部分******************************************************/
 /**
  * @description: 判断题库是否存在
@@ -1368,3 +1235,138 @@ function updateTikunet() {
     console.log("数据库更新完毕！");
     console.hide()
 }
+
+
+/** UI 设置位置，放在最后 */
+ui.layout(
+    <vertical>
+        <text textSize="16sp" textColor="red" text="欢迎使用xxqg-helper!" />
+        <button id="all" h="90" text="完整运行" />
+        <button id="customize" h="90" text="自定义运行（文章视频数量按照自定义值）" />
+        <button id="cq" h="60" text="挑战答题" />
+        <button id="dq" h="60" text="每日答题" />
+        <button id="stop" h="70" text="停止运行" />
+
+        <horizontal>
+            <text textSize="16sp" marginLeft="15" textColor="black" text="文章学习类别:" />
+            <input id="acatlog" text="" />
+        </horizontal>
+
+        <horizontal>
+            <text textSize="16sp" marginLeft="15" textColor="black" text="文章数量(个):" />
+            <input id="acount" w="30" text="" />
+            <text textSize="16sp" marginLeft="15" textColor="black" text="视频数量(个):" />
+            <input id="vcount" w="30" text="" />
+        </horizontal>
+
+        <horizontal>
+            <text textSize="16sp" marginLeft="15" textColor="black" text="挑战答题轮数:" />
+            <input id="lcount" w="30" text="" />
+            <text textSize="16sp" marginLeft="15" textColor="black" text="挑战答题每轮答题数:" />
+            <input id="qcount" w="30" text="" />
+        </horizontal>
+
+
+        <button w="250" layout_gravity="center" id="about" text="关于本助手" />
+        <button w="250" layout_gravity="center" id="update" text="更新题库" />
+    </vertical>
+);
+
+ui.acatlog.setText(aCatlog.toString());
+ui.acount.setText(aCount.toString());
+ui.vcount.setText(vCount.toString());
+ui.lcount.setText(lCount.toString());
+ui.qcount.setText(qCount.toString());
+
+var thread = null;
+
+ui.all.click(function () {
+    if (thread != null && thread.isAlive()) {
+        alert("注意!", "当前程序正在运行，请结束之前进程");
+        return;
+    }
+    toast("开始完整运行");
+    thread = threads.start(function () {
+        aCatlog = ui.acatlog.getText();
+        lCount = parseInt(ui.lcount.getText());
+        qCount = parseInt(ui.qcount.getText());
+        main();
+    });
+});
+
+ui.customize.click(function () {
+    if (thread != null && thread.isAlive()) {
+        alert("注意!", "当前程序正在运行，请结束之前进程");
+        return;
+    }
+    toast("开始自定义运行");
+    thread = threads.start(function () {
+        aCount = parseInt(ui.acount.getText());
+        vCount = parseInt(ui.vcount.getText());
+        aCatlog = ui.acatlog.getText();
+        lCount = parseInt(ui.lcount.getText());
+        qCount = parseInt(ui.qcount.getText());
+        customize_flag = true;
+        console.log('文章数量：' + aCount.toString() + '篇')
+        console.log('视频数量：' + vCount.toString() + '个')
+        console.log('类别：' + aCatlog)
+        main();
+    });
+});
+
+
+ui.cq.click(function () {
+    if (thread != null && thread.isAlive()) {
+        alert("注意!", "当前程序正在运行，请结束之前进程");
+        return;
+    }
+    thread = threads.start(function () {
+        lCount = parseInt(ui.lcount.getText());
+        qCount = parseInt(ui.qcount.getText());
+        start_app();
+        challengeQuestion();
+    });
+});
+
+ui.dq.click(function () {
+    if (thread != null && thread.isAlive()) {
+        alert("注意!", "当前程序正在运行，请结束之前进程");
+        return;
+    }
+    thread = threads.start(function () {
+        start_app();
+        dailyQuestion();
+    });
+});
+
+ui.stop.click(function () {
+    if (thread != null && thread.isAlive()) {
+        threads.shutDownAll();
+        toast("已停止运行！")
+        console.hide();
+    }
+    else {
+        toast("当前没有线程在运行！")
+    }
+});
+ui.update.click(function () {
+    if (thread != null && thread.isAlive()) {
+        alert("注意!", "当前程序正在运行，请结束之前进程");
+        return;
+    }
+
+    confirm("确认更新题库吗?")
+    .then(c => {
+        if(c){
+            thread = threads.start(function () {
+                updateTikunet()
+            });
+        }
+    });
+
+});
+
+ui.about.click(function () {
+    alert("xxqg-helper", "本脚本只可用于个人学习Auto.js，不得用于一切商业或违法用途，否则追究责任！造成的后果自负！\n 任何问题请上github交流!");
+});
+

@@ -1,6 +1,5 @@
-/*
-runtime.loadJar('./jsoup-1.12.1.jar');
-
+/**
+runtime.loadJar('./jsoup-1.13.1.jar');
 importClass(org.jsoup.Jsoup);
 importClass(org.jsoup.nodes.Document);
 importClass(org.jsoup.select.Elements);
@@ -28,7 +27,7 @@ var commentText = ["支持党，支持国家！", "为实现中华民族伟大�
 
 var aCatlog = "推荐"//文章学习类别，可自定义修改为“要闻”、“新思想”等
 
-var lCount = 3;//挑战答题轮数
+var lCount = 2;//挑战答题轮数
 var qCount = 5;//挑战答题每轮答题数
 var myScores = {};//分数
 
@@ -43,6 +42,14 @@ function delay(seconds) {
     sleep(1000 * seconds);//sleep函数参数单位为毫秒所以乘1000
 }
 
+function wait_homepage() {
+  while (!id("home_bottom_tab_icon_large").exists()) {
+    console.log("正在等待加载出主页");
+    delay(1);
+  }
+
+  return id("home_bottom_tab_icon_large").findOne();
+}
 /**
  * @description: 文章学习计时(弹窗)函数
  * @param: n-文章标号 seconds-学习秒数
@@ -190,8 +197,7 @@ function getYestardayDateString() {
  * @return: null
  */
 function articleStudy() {
-    while (!desc("学习").exists());//等待加载出主页
-    desc("学习").click();//点击主页正下方的"学习"按钮
+    wait_homepage().click()
     delay(2);
     var listView = className("ListView");//获取文章ListView控件用于翻页
     click(aCatlog);
@@ -221,7 +227,7 @@ function articleStudy() {
                 console.warn("进入了视频界面，退出并进下一篇文章!");
                 t++;
                 back();
-                while (!desc("学习").exists());
+                wait_homepage()
                 delay(0.5);
                 click("电台");
                 delay(1);
@@ -229,8 +235,7 @@ function articleStudy() {
                 console.log("因为广播被打断，重新收听广播...");
                 delay(1);
                 back();
-                while (!desc("学习").exists());
-                desc("学习").click();
+                wait_homepage().click()
                 delay(1);
                 continue;
             }
@@ -252,7 +257,7 @@ function articleStudy() {
                 Comment(i);//评论
             }
             back();//返回主界面
-            while (!desc("学习").exists());//等待加载出主页
+            wait_homepage()
             delay(1);
             i++;
             t++;//t为实际点击的文章控件在当前布局中的标号,和i不同,勿改动!
@@ -332,7 +337,7 @@ function videoStudy_news() {
             console.log("即将学习第" + (i + 1) + "个视频!");
             video_timing_news(i, vTime);//学习每个新闻联播小片段
             back();//返回联播频道界面
-            while (!desc("学习").exists());//等待加载出主页
+            wait_homepage()
             delay(1);
             i++;
             t++;
@@ -454,7 +459,7 @@ function Comment(i) {
  * @return: null
  */
 function localChannel() {
-    while (!desc("学习").exists());//等待加载出主页
+    wait_homepage()
     console.log("点击本地频道");
     if (text("新思想").exists()) {
         text("新思想").findOne().parent().parent().child(3).click();
@@ -475,7 +480,7 @@ function localChannel() {
  * @return: null
  */
 function getScores() {
-    while (!desc("学习").exists());//等待加载出主页
+    wait_homepage()
     console.log("正在获取积分...");
     while (!text("积分明细").exists()) {
         if (id("comm_head_xuexi_score").exists()) {
@@ -531,10 +536,7 @@ function start_app() {
         console.error("找不到学习强国App!");
         return;
     }
-    while (!desc("学习").exists()) {
-        console.log("正在等待加载出主页");
-        delay(1);
-    }
+    wait_homepage()
     delay(1);
 }
 
@@ -546,39 +548,56 @@ function main() {
     start_app();//启动app
     var start = new Date().getTime();//程序开始时间
 
-    getScores();//获取积分
-    if (myScores['本地频道'] != 1) {
+    if (customize_flag == true) {
+        //自定义学习，各项目执行顺序可换
         localChannel();//本地频道
-    }
-    if (myScores['挑战答题'] != 6) {
         challengeQuestion();//挑战答题
-    }
-    if (myScores['每日答题'] != 6) {
         dailyQuestion();//每日答题
-    }
-    if (vCount != 0) {
         videoStudy_news();//看视频
-    }
-    if (rTime != 0) {
         listenToRadio();//听电台广播
+        var r_start = new Date().getTime();//广播开始时间
+        articleStudy();//学习文章，包含点赞、分享和评论
+        if (rTime != 0) {
+            listenToRadio();//继续听电台
+        }
+        var end = new Date().getTime();//广播结束时间
+        var radio_time = (parseInt((end - r_start) / 1000));//广播已经收听的时间
+        radio_timing(parseInt((end - r_start) / 1000), rTime - radio_time);//广播剩余需收听时间
     }
-    var r_start = new Date().getTime();//广播开始时间
-    articleStudy();//学习文章，包含点赞、分享和评论
-    if (rTime != 0) {
-        listenToRadio();//继续听电台
+    else {
+        getScores();//获取积分
+        if (myScores['本地频道'] != 1) {
+            localChannel();//本地频道
+        }
+        if (myScores['挑战答题'] != 6) {
+            challengeQuestion();//挑战答题
+        }
+        if (myScores['每日答题'] != 6) {
+            dailyQuestion();//每日答题
+        }
+        if (vCount != 0) {
+            videoStudy_news();//看视频
+        }
+        if (rTime != 0) {
+            listenToRadio();//听电台广播
+        }
+        var r_start = new Date().getTime();//广播开始时间
+        articleStudy();//学习文章，包含点赞、分享和评论
+        if (rTime != 0) {
+            listenToRadio();//继续听电台
+        }
+        var end = new Date().getTime();//广播结束时间
+        var radio_time = (parseInt((end - r_start) / 1000));//广播已经收听的时间
+        radio_timing(parseInt((end - r_start) / 1000), rTime - radio_time);//广播剩余需收听时间
     }
-    var end = new Date().getTime();//广播结束时间
-    var radio_time = (parseInt((end - r_start) / 1000));//广播已经收听的时间
-    radio_timing(parseInt((end - r_start) / 1000), rTime - radio_time);//广播剩余需收听时间
 
     end = new Date().getTime();
     console.log("运行结束,共耗时" + (parseInt(end - start)) / 1000 + "秒");
 }
 
+
+/********************************************UI部分***********************************************/
 auto.waitFor();//等待获取无障碍辅助权限
-main();
-
-
 /*************************************************挑战答题部分******************************************************/
 /**
  * @description: 判断题库是否存在
@@ -749,10 +768,9 @@ function challengeQuestion() {
     while (!textContains("我要答题").exists());
     delay(1);
     click("我要答题");
+    //while (!text("挑战答题").exists());
     delay(1);
-    while(!className('android.view.View').depth(22).indexInParent(10).findOnce().click()){
-        sleep(1);
-    }
+    className('android.view.View').depth(22).indexInParent(10).find().click();
     console.log("开始挑战答题")
     delay(4);
     let conNum = 0;//连续答对的次数
@@ -774,12 +792,13 @@ function challengeQuestion() {
             }
             else {
                 console.log("等10秒开始下一轮...")
-                delay(8);//等待10秒才能开始下一轮
+                delay(5);//等待10秒才能开始下一轮
                 back();
                 //desc("结束本局").click();//有可能找不到结束本局字样所在页面控件，所以直接返回到上一层
                 delay(1);
                 //desc("再来一局").click();
                 back();
+                //while (!text("挑战答题").exists());
                 delay(1);
                 className('android.view.View').depth(22).indexInParent(10).findOnce().click()
                 delay(4);
@@ -1203,6 +1222,7 @@ function CreateAndInsert(liArray) {
  * @return: null
  */
 function updateTikunet() {
+    console.show()
     console.log("开始下载题库json数据...");
     var htmlString = Jsoup.connect("http://49.235.90.76:5000").maxBodySize(0).timeout(10000).get();
     var htmlArray = Jsoup.parse(htmlString);
@@ -1212,4 +1232,8 @@ function updateTikunet() {
     console.log("开始更新数据库...");
     CreateAndInsert(liArray)
     console.log("数据库更新完毕！");
+    console.hide()
 }
+
+
+main()
